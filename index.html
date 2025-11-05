@@ -1,0 +1,44 @@
+<!doctype html><html lang="de"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supplement-Index – tägliche Clean-Top-Deals</title>
+<link rel="stylesheet" href="style.css">
+<meta name="description" content="Täglich automatisch aktualisierte Clean-Top-Deals für Supplements und Vitamine – mit Preis pro Einheit.">
+</head><body>
+<header>
+  <h1>Supplement-Index</h1>
+  <p class="sub">Täglich automatisch aktualisiert • Clean-Filter • Preis pro Einheit</p>
+  <nav><a href="#heute" class="btn">Heutige Liste</a><a href="#so" class="btn ghost">So funktioniert’s</a></nav>
+</header>
+
+<main>
+<section id="heute"><h2>Heute</h2><div id="today"></div></section>
+<section id="archiv"><h2>Archiv</h2><ul id="archive"></ul></section>
+<section id="so"><h2>So funktioniert’s</h2>
+<p>Wir scannen Shops, filtern Süßstoffe/Füllstoffe heraus und berechnen €/100 Einheiten. Links können Affiliate-Links sein.</p>
+</section>
+</main>
+
+<footer>© <span id="y"></span> • Transparenz: Affiliate-Links. Keine Gesundheitsberatung.</footer>
+
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+fetch('feed.json').then(r=>r.json()).then(feed=>{
+  // Ersten Eintrag als "Heute" laden
+  const p = feed.posts && feed.posts[0];
+  if(p){
+    document.getElementById('today').innerHTML =
+      `<article class="card"><h3>${p.title}</h3><p>${p.summary}</p>
+       <a class="btn" href="${p.url}">Beitrag öffnen</a></article>`;
+  } else {
+    document.getElementById('today').innerHTML = `<p>Noch kein Beitrag.</p>`;
+  }
+  // Archivliste
+  const ul = document.getElementById('archive');
+  (feed.posts||[]).slice(0,30).forEach(item=>{
+    const li=document.createElement('li');
+    li.innerHTML=`<a href="${item.url}">${item.title}</a>`;
+    ul.appendChild(li);
+  });
+});
+</script>
+</body></html>
